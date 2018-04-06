@@ -62,11 +62,13 @@ module.exports = {
             let data = [];
             $('.list_box').each(function(i, ele) {
                 let _self = $(ele);
+                let info = _self.find('.author_name').text();
                 data.push({
                     vid: /\?vid=(\d+)/gi.exec(_self.find('.box_list_img').attr('href'))[1], //获取voice id
-                    cover: imgPrefix + _self.find('.box_list_img img').attr('src'), //获取封面
-                    name: _self.find('.list_author a').text(), //获取声音名
-                    author: _self.find('.author_name').text(), //获取作者
+                    cover: imgPrefix + (_self.find('.box_list_img img').attr('src').replace(/_\d+/g, '')), //获取封面
+                    name: util.replaceText(_self.find('.list_author a').text()), //获取声音名
+                    author: info.match(/作者：(\S+(?=\s))/)[1], //获取作者
+                    host: info.match(/主播：(\S+(?=\s))/)[1],
                     tag: _self.find('.voice_tag').text(), // 获取期次
                 })
             });
@@ -84,7 +86,7 @@ module.exports = {
             let content = '';
             $('.article_text p').each(function(i, ele) {
                 let _self = $(ele);
-                content += '\n' + _self.text();
+                content += (_self.text() + '\n');
             }) 
             // 直接使用html() 方法会导致抓取回来的内容进行了unicode 转义
             let data = {
@@ -92,6 +94,7 @@ module.exports = {
                 author: util.replaceText($('.article_author').text()),
                 content: content
             };
+            
             resolve(data);
         });
         ctx.body = result;
@@ -104,7 +107,7 @@ module.exports = {
             let content = '';
             $('.article_text p').each(function(i, ele) {
                 let _self = $(ele);
-                content += '\n' + _self.text();
+                content += (_self.text() + '\n');
             }) 
             let data = {
                 title: util.replaceText($('#article_show h1').text()),

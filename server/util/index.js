@@ -23,6 +23,6 @@ module.exports = {
         });
     },
     replaceText: text => {
-        return text.replace(/\n/g, '').replace(/\s/g, '');
+        return text.replace(/\n|\s/gi, '');
     }
 }

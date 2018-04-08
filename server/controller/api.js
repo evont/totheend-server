@@ -46,9 +46,14 @@ module.exports = {
         let cid = ctx.params.cid;
         let result = await util.crawler(`http://book.meiriyiwen.com/book/chapter/?bid=${bid}&cid=${cid}`, (response, resolve) => {
             let $ = cheerio.load(response.text);
+            let content = '';
+            $('.chapter-bg p').each(function(i, ele) {
+                let _self = $(ele);
+                content += (_self.text() + '\n');
+            }) 
             let data = {
-                title: util.replaceText($('.list-header').text()),
-                content: util.replaceText($('.chapter-bg').html())
+                title: replaceText($('.list-header').text()),
+                content: content
             };
             resolve(data);
         });
